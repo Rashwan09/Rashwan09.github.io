@@ -237,6 +237,15 @@ body{min-height:100vh;background:
     <select class="sel" id="period-pick"></select>
     <select class="sel hidden" id="agent-pick"></select>
     <div class="spacer"></div>
+    <div class="rep-wrap">
+      <button id="rep-btn">📄 Generate Report ▾</button>
+      <div id="rep-menu" class="rep-menu hidden">
+        <button data-rp="week">Weekly</button>
+        <button data-rp="month">Monthly</button>
+        <button data-rp="quarter">Quarterly</button>
+        <button data-rp="year">Yearly</button>
+      </div>
+    </div>
   </div>
 
   <div id="app"></div>
@@ -707,6 +716,118 @@ if(RASHWAN_PHOTO)document.getElementById('hd-lead-photo').src=RASHWAN_PHOTO;
 state.period='month';state.periodKey='2026-06';
 refreshPeriodPicker();refreshAgentPicker();render();
 loadPhotos();
+</script>
+
+<script>
+/* ══════════════════════ REPORT GENERATOR ══════════════════════ */
+(function(){
+  const css = `
+  #rep-btn{background:var(--navy,#123a5e);color:#fff;border:0;font-family:var(--sans);font-weight:600;font-size:12.5px;padding:8px 14px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+  #rep-btn:hover{filter:brightness(1.1)}
+  .rep-wrap{position:relative}
+  .rep-menu{position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #e4e7ec;border-radius:12px;box-shadow:0 12px 34px rgba(16,24,40,.2);padding:6px;z-index:120;min-width:158px}
+  .rep-menu button{display:block;width:100%;text-align:left;border:0;background:transparent;font-family:var(--sans);font-size:13px;font-weight:600;color:#161d29;padding:9px 12px;border-radius:8px;cursor:pointer}
+  .rep-menu button:hover{background:#f2f4f7}
+  #rep-overlay{position:fixed;inset:0;background:rgba(10,12,15,.55);z-index:300;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:26px 16px}
+  #rep-overlay.show{display:flex}
+  .rep-paper{background:#fff;color:#1a2230;width:100%;max-width:830px;border-radius:14px;box-shadow:0 24px 70px rgba(0,0,0,.45);overflow:hidden;font-family:var(--sans)}
+  .rep-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 18px;background:#0f2f50;color:#fff}
+  .rep-bar .t{font-size:13px;font-weight:600;letter-spacing:.3px}
+  .rep-bar .btns{display:flex;gap:8px}
+  .rep-bar button{border:0;border-radius:8px;padding:7px 13px;font-family:var(--sans);font-weight:600;font-size:12.5px;cursor:pointer}
+  .rep-print{background:#c6952a;color:#1a1400}
+  .rep-close{background:rgba(255,255,255,.16);color:#fff}
+  .rep-body{padding:26px 30px 34px}
+  .rep-hh{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #123a5e;padding-bottom:14px;margin-bottom:16px}
+  .rep-brand .p{font-size:20px;font-weight:700;letter-spacing:1.5px;color:#123a5e}
+  .rep-brand .s{font-size:8.5px;font-weight:600;letter-spacing:3.5px;color:#c6952a;margin-top:2px}
+  .rep-meta{text-align:right;font-size:11px;color:#667085;line-height:1.6}
+  .rep-title{font-size:23px;font-weight:700;color:#101828;margin:2px 0}
+  .rep-sub{font-size:12.5px;color:#667085;margin-bottom:20px}
+  .rep-kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:6px}
+  .rep-k{border:1px solid #e4e7ec;border-radius:12px;padding:13px 14px}
+  .rep-k .l{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:#667085;font-weight:600}
+  .rep-k .v{font-size:21px;font-weight:700;color:#101828;margin-top:6px;line-height:1.05}
+  .rep-k .d{font-size:10.5px;margin-top:6px;color:#98a2b3}
+  .rep-k .d b.up{color:#2f9e5b}.rep-k .d b.dn{color:#d1544d}
+  .rep-h{font-size:13px;font-weight:700;color:#123a5e;margin:24px 0 10px;letter-spacing:.3px}
+  .rep-tbl{width:100%;border-collapse:collapse;font-size:12px}
+  .rep-tbl th{text-align:left;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#98a2b3;font-weight:600;padding:8px 10px;border-bottom:1px solid #e4e7ec}
+  .rep-tbl td{padding:8px 10px;border-bottom:1px solid #eef0f3}
+  .rep-tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+  .rep-tbl td.rev{color:#b5842a;font-weight:700}
+  .rep-tbl tr.top td{background:#faf6ec}
+  .rep-foot{margin-top:24px;padding-top:12px;border-top:1px solid #e4e7ec;font-size:10px;color:#98a2b3;text-align:center;letter-spacing:.4px}
+  @media print{
+    body>*{display:none!important}
+    #rep-overlay{display:block!important;position:static!important;background:#fff!important;padding:0!important;overflow:visible}
+    #rep-overlay .rep-bar{display:none!important}
+    .rep-paper{box-shadow:none!important;max-width:100%!important;border-radius:0!important}
+    @page{margin:13mm}
+  }`;
+  const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
+
+  function fFull(v){return v==null?'—':'AED '+Math.round(v).toLocaleString('en-US');}
+  function num(v){return Math.round(v).toLocaleString('en-US');}
+  const PLBL={week:'Weekly',month:'Monthly',quarter:'Quarterly',year:'Yearly'};
+
+  function latestOpt(period){
+    const opts=buildPeriods(period);
+    for(let i=opts.length-1;i>=0;i--){const a=aggregate(rangeOf(period,opts[i].key));if(a.calls||a.mtg||a.deals)return opts[i];}
+    return opts[opts.length-1];
+  }
+  function repDelta(cur,prev){
+    if(prev==null)return '';
+    if(prev===0&&cur===0)return ' · <b>±0%</b>';
+    if(prev===0)return ' · <b class="up">▲ new</b>';
+    const d=Math.round((cur-prev)/prev*100);
+    return ' · <b class="'+(d>0?'up':d<0?'dn':'')+'">'+(d>0?'▲':d<0?'▼':'±')+Math.abs(d)+'% vs prev</b>';
+  }
+  function generate(period){
+    const opt=latestOpt(period);const key=opt.key;const range=rangeOf(period,key);
+    const agg=aggregate(range);
+    const pk=prevKey(period,key);const prev=pk?aggregate(rangeOf(period,pk)):null;
+    const tf=teamTargetFactor(period,range);
+    const tCalls=Math.round(T.callsPerMonth*tf),tMtg=Math.round(T.meetingsPerMonth*tf),tRev=Math.round(T.revenuePerMonth*tf);
+    const rows=activeAgents(range).map(n=>({name:n,...aggregate(range,n)})).sort((a,b)=>b.rev-a.rev||b.deals-a.deals);
+    const dealsList=DEALS.filter(d=>inRange(d.date,range)).sort((a,b)=>a.date<b.date?1:-1);
+    const now=new Date();
+    const fdate=d=>new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    const body=`
+      <div class="rep-hh">
+        <div class="rep-brand"><div class="p">PROVIDENT</div><div class="s">REAL ESTATE</div></div>
+        <div class="rep-meta">Team Rashwan · Command Report<br>Generated ${now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}<br>Confidential — Internal Use Only</div>
+      </div>
+      <div class="rep-title">${PLBL[period]} Performance Report</div>
+      <div class="rep-sub">${opt.label} &nbsp;·&nbsp; ${fdate(range.start)} – ${fdate(range.end)}</div>
+      <div class="rep-kgrid">
+        <div class="rep-k"><div class="l">Calls Made</div><div class="v">${num(agg.calls)}</div><div class="d">of ${num(tCalls)} target${repDelta(agg.calls,prev&&prev.calls)}</div></div>
+        <div class="rep-k"><div class="l">Meetings</div><div class="v">${num(agg.mtg)}</div><div class="d">of ${num(tMtg)} target${repDelta(agg.mtg,prev&&prev.mtg)}</div></div>
+        <div class="rep-k"><div class="l">Deals Closed</div><div class="v">${agg.deals}</div><div class="d">${agg.pending?agg.pending+' value pending':'all confirmed'}${repDelta(agg.deals,prev&&prev.deals)}</div></div>
+        <div class="rep-k"><div class="l">Revenue</div><div class="v" style="color:#b5842a">${fFull(agg.rev)}</div><div class="d">of ${fFull(tRev)} target${repDelta(agg.rev,prev&&prev.rev)}</div></div>
+      </div>
+      <div class="rep-h">Agent Leaderboard — ${opt.label}</div>
+      <table class="rep-tbl"><thead><tr><th>#</th><th>Agent</th><th class="n">Calls</th><th class="n">Meetings</th><th class="n">Deals</th><th class="n">Revenue (AED)</th></tr></thead><tbody>
+      ${rows.length?rows.map((a,i)=>`<tr class="${i===0?'top':''}"><td>${i+1}</td><td>${a.name}</td><td class="n">${num(a.calls)}</td><td class="n">${num(a.mtg)}</td><td class="n">${a.deals}</td><td class="n rev">${a.rev?num(a.rev):'—'}</td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:#98a2b3;padding:16px">No activity in this period.</td></tr>'}
+      <tr style="font-weight:700;background:#eef2f6"><td></td><td>TEAM TOTAL</td><td class="n">${num(agg.calls)}</td><td class="n">${num(agg.mtg)}</td><td class="n">${agg.deals}</td><td class="n rev">${num(agg.rev)}</td></tr>
+      </tbody></table>
+      <div class="rep-h">Deals Closed — ${dealsList.length} deal${dealsList.length===1?'':'s'}</div>
+      <table class="rep-tbl"><thead><tr><th>Date</th><th>Agent</th><th class="n">Value (AED)</th></tr></thead><tbody>
+      ${dealsList.length?dealsList.map(d=>`<tr><td>${fdate(d.date)}${d.approxDate?' *':''}</td><td>${d.name}</td><td class="n rev">${d.aed?num(d.aed):'value pending'}</td></tr>`).join(''):'<tr><td colspan="3" style="text-align:center;color:#98a2b3;padding:16px">No deals closed in this period.</td></tr>'}
+      </tbody></table>
+      <div class="rep-foot">Team Rashwan Command Dashboard · Provident Real Estate · Figures from the daily KPI tracker &amp; deal ledger · Confidential — Internal Use Only</div>`;
+    let ov=document.getElementById('rep-overlay');
+    if(!ov){ov=document.createElement('div');ov.id='rep-overlay';document.body.appendChild(ov);ov.onclick=e=>{if(e.target===ov)ov.classList.remove('show');};}
+    ov.innerHTML=`<div class="rep-paper"><div class="rep-bar"><div class="t">${PLBL[period]} Report · ${opt.label}</div><div class="btns"><button class="rep-print" onclick="window.print()">🖨 Print / Save as PDF</button><button class="rep-close" onclick="document.getElementById('rep-overlay').classList.remove('show')">✕ Close</button></div></div><div class="rep-body">${body}</div></div>`;
+    ov.classList.add('show');ov.scrollTop=0;
+  }
+  const btn=document.getElementById('rep-btn'),menu=document.getElementById('rep-menu');
+  if(btn){
+    btn.onclick=e=>{e.stopPropagation();menu.classList.toggle('hidden');};
+    menu.querySelectorAll('button').forEach(b=>b.onclick=e=>{e.stopPropagation();menu.classList.add('hidden');generate(b.dataset.rp);});
+    document.addEventListener('click',()=>menu.classList.add('hidden'));
+  }
+})();
 </script>
 </body>
 </html>
