@@ -89,13 +89,14 @@ body{min-height:100vh;background:
 .spacer{flex:1}
 
 /* KPI tiles */
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
 .kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:15px 16px;position:relative;overflow:hidden;box-shadow:var(--sh)}
 .kpi::after{content:'';position:absolute;left:0;top:0;height:3px;width:100%}
 .kpi.k-calls::after{background:var(--blue)}
 .kpi.k-mtg::after{background:var(--bronze)}
 .kpi.k-deals::after{background:var(--green)}
 .kpi.k-rev::after{background:linear-gradient(90deg,var(--gold),#e0b752)}
+.kpi.k-leads::after{background:var(--purple)}
 .kpi-top{display:flex;align-items:center;justify-content:space-between}
 .kpi-lbl{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--mut);font-weight:700}
 .kpi-ico{font-size:15px;opacity:.9}
@@ -113,6 +114,7 @@ body{min-height:100vh;background:
 .k-mtg .tprog span{background:var(--bronze)}
 .k-deals .tprog span{background:var(--green)}
 .k-rev .tprog span{background:linear-gradient(90deg,var(--gold),#e0b752)}
+.k-leads .tprog span{background:var(--purple)}
 
 /* Panels */
 .grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-bottom:14px}
@@ -151,7 +153,7 @@ body{min-height:100vh;background:
 .rs.deals .v{color:var(--green)}
 .open-hint{font-size:9px;color:var(--mut2);margin-left:8px;opacity:0;transition:.15s}
 .row:hover .open-hint{opacity:1}
-@media(max-width:640px){.rs.hideM{display:none}}
+@media(max-width:640px){.rstats .rs{display:none}.rstats .rs.selmetric{display:block}}
 
 /* Individual */
 .ind-hd{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:15px 18px;margin-bottom:14px;box-shadow:var(--sh);position:relative;overflow:hidden}
@@ -196,8 +198,82 @@ body{min-height:100vh;background:
 .hidden{display:none!important}
 .footer{text-align:center;font-size:10px;color:var(--faint);margin-top:24px;letter-spacing:.4px}
 
-@media(max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:860px){.kpis{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.hd-meta{display:none}.hd-title{font-size:18px}.kpi-val{font-size:23px}.ind-pipe{display:none}}
+
+/* Phone layout */
+@media(max-width:640px){
+  html,body{width:100%;overflow-x:hidden}
+  .wrap{width:100%;padding:8px 8px 40px}
+
+  .hd{padding:12px;margin-bottom:10px;border-radius:14px;gap:10px}
+  .hd-l{width:100%;gap:10px}
+  .hd-logo{min-width:104px}
+  .lg-p{font-size:16px}.lg-s{font-size:7px;letter-spacing:2.6px}
+  .hd-sep{height:32px}.hd-eyebrow{font-size:8px;letter-spacing:1.8px}
+  .hd-title{font-size:16px;margin-top:3px}
+  .hd-r{width:100%;gap:8px;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px}
+  .hd-lead{gap:8px;min-width:0}.hd-lead-ph{width:40px;height:40px}
+  .hd-lead-txt{min-width:0}.ll-n{font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ll-t{font-size:8.5px}
+  .hd-meta{display:block!important;border-left:0;padding-left:4px;font-size:8.5px;line-height:1.45;max-width:142px;flex-shrink:0}
+
+  .controls{display:grid;grid-template-columns:1fr;gap:8px;padding:8px;margin-bottom:10px;border-radius:12px}
+  .controls .seg{display:flex;width:100%;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .controls .seg::-webkit-scrollbar{display:none}
+  .controls .seg button{flex:1;min-width:max-content;padding:7px 10px;font-size:11px}
+  .ctl-label,.spacer{display:none}
+  .sel{width:100%;min-width:0;font-size:12px;padding:9px 10px}
+  .rep-wrap{width:100%}#rep-btn{width:100%;justify-content:center;padding:9px 12px}
+  .rep-menu{left:0;right:0;width:100%}
+
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
+  .kpi{padding:12px 11px;border-radius:13px;min-width:0}
+  .kpi.k-leads{grid-column:1/-1}
+  .kpi-lbl{font-size:8.5px;letter-spacing:.8px}.kpi-ico{font-size:13px}
+  .kpi-val{font-size:22px;margin-top:7px}.kpi-sub{gap:5px;margin-top:8px;font-size:9px}
+  .delta{font-size:9px;padding:1px 5px}.tgt{font-size:8.5px}.tprog{margin-top:8px}
+
+  .grid2{grid-template-columns:minmax(0,1fr);gap:10px;margin-bottom:10px}
+  .panel{min-width:0;padding:13px 11px 12px;border-radius:14px;overflow-x:auto}
+  .panel-hd{align-items:flex-start;flex-direction:column;gap:8px;margin-bottom:10px}
+  .panel-t{font-size:13px}.panel-t small{font-size:9px;line-height:1.35}
+  .mini-seg{display:flex;width:100%;overflow-x:auto;scrollbar-width:none}
+  .mini-seg::-webkit-scrollbar{display:none}
+  .mini-seg button{flex:1;min-width:max-content;font-size:10px;padding:5px 7px}
+  .chart-box{height:230px;min-width:0}
+
+  .lb{gap:7px}.row{gap:8px;padding:9px 8px;border-radius:11px;min-width:0;flex-wrap:wrap}
+  .badge{width:24px;min-width:24px;height:24px;font-size:11px}
+  .av{width:34px;min-width:34px;height:34px}
+  .who .nm{font-size:12px}.who .ro{font-size:8.5px}
+  .rstats{width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);padding-top:8px;margin-top:2px}
+  .rs,.rs.hideM{display:block;text-align:center;padding:0 3px;min-width:0;border-left:1px solid var(--line)}
+  .rs:first-child{border-left:0}.rs .v{font-size:12px}.rs .l{font-size:7px;letter-spacing:.3px}
+  .rs.calls .v{color:var(--blue)}.rs.mtg .v{color:var(--bronze)}
+  .rs.selmetric{background:#f0f5fa;border-radius:7px;padding-top:3px;padding-bottom:3px}
+  .open-hint{display:none}
+
+  .ind-hd{padding:12px;gap:10px}.ind-av{width:50px;min-width:50px;height:50px;border-radius:12px;font-size:18px}
+  .ind-meta{min-width:0}.ind-meta .nm{font-size:16px}.ind-meta .ro{font-size:10px}.ind-meta .st{font-size:9px;line-height:1.5}
+  .ind-pipe{display:none}.pill{font-size:7px;margin-left:4px;padding:2px 5px}
+  .chips{gap:6px}.chip{font-size:10px;padding:5px 9px 5px 5px}
+
+  .tbl{min-width:520px;font-size:11px}.tbl th{font-size:8px;padding:7px}.tbl td{padding:8px 7px}
+  .footer{font-size:8px;line-height:1.5;margin-top:16px;padding:0 12px}
+
+  #rep-overlay{padding:8px}.rep-paper{border-radius:10px}.rep-bar{padding:10px;align-items:flex-start;flex-direction:column}
+  .rep-bar .btns{width:100%}.rep-bar button{flex:1}.rep-body{padding:16px 12px 24px}
+  .rep-hh{gap:10px}.rep-brand .p{font-size:16px}.rep-meta{font-size:8px}
+  .rep-title{font-size:18px}.rep-kgrid{grid-template-columns:repeat(2,1fr);gap:8px}.rep-k{padding:10px}.rep-k .v{font-size:17px}
+  .rep-tbl{font-size:9px}.rep-tbl th,.rep-tbl td{padding:6px 4px}
+}
+@media(max-width:380px){
+  .wrap{padding-left:6px;padding-right:6px}.hd-logo{min-width:92px}.lg-p{font-size:14px}.hd-title{font-size:14px}
+  .ll-n{font-size:10.5px}.hd-meta{max-width:125px;font-size:7.8px}
+  .controls .seg button{padding-left:8px;padding-right:8px}.kpi{padding:11px 9px}.kpi-val{font-size:20px}
+  .row{gap:6px}.rs,.rs.hideM{padding-left:2px;padding-right:2px}.who .nm{font-size:11px}
+}
 </style>
 </head>
 <body>
@@ -229,6 +305,7 @@ body{min-height:100vh;background:
     </div>
     <span class="ctl-label">Period</span>
     <div class="seg plain" id="period-seg">
+      <button data-p="day">Day</button>
       <button data-p="week">Week</button>
       <button data-p="month" class="on">Month</button>
       <button data-p="quarter">Quarter</button>
@@ -240,6 +317,7 @@ body{min-height:100vh;background:
     <div class="rep-wrap">
       <button id="rep-btn">📄 Generate Report ▾</button>
       <div id="rep-menu" class="rep-menu hidden">
+        <button data-rp="day">Daily</button>
         <button data-rp="week">Weekly</button>
         <button data-rp="month">Monthly</button>
         <button data-rp="quarter">Quarterly</button>
@@ -261,12 +339,13 @@ const DASH = JSON.parse(document.getElementById('dash-data').textContent);
 const PHOTOS = JSON.parse(document.getElementById('dash-photos').textContent);
 const RASHWAN_PHOTO = PHOTOS['__RASHWAN__']||'';
 const CFG = DASH.config;
-const DAILY = DASH.daily;                 // {d,n,c,m,k,l}
-const DEALS = DASH.deals;                 // {date,name,aed,confirmed,approxDate}
-const ROSTER = DASH.roster;               // {name,active,lastActive}
+let DAILY = DASH.daily;                   // {d,n,c,m,k,l}
+let DEALS = DASH.deals;                   // {date,name,aed,confirmed,approxDate}
+let ROSTER = DASH.roster;                 // {name,active,lastActive}
 const T = CFG.targets;
-const AGENT_NAMES = ROSTER.map(r=>r.name);
+let AGENT_NAMES = ROSTER.map(r=>r.name);
 const DAYS_IN_MONTH = 30.44;
+const SHEET_API='https://script.google.com/macros/s/AKfycbyrwMOR8DPuRxyyCtaZKe1VU-Nyaixxa78k7tCftAmE3FpaKiugrLQfKGWWSkdqeA7u/exec';
 
 const AGENT_META = {};   // name -> {photo, role}
 ROSTER.forEach(r=>{ AGENT_META[r.name]={photo:PHOTOS[r.name]||null, role:r.role||(r.active?'Sales Agent':'Former Agent'), active:r.active, lastActive:r.lastActive}; });
@@ -293,23 +372,21 @@ function fmtD(dt){return dt.toISOString().slice(0,10);}
 function mondayOf(dt){const x=new Date(dt);const day=(x.getUTCDay()+6)%7;x.setUTCDate(x.getUTCDate()-day);return x;}
 function addDays(dt,n){const x=new Date(dt);x.setUTCDate(x.getUTCDate()+n);return x;}
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const MONTHS_FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-const allDates=DAILY.map(r=>r.d).concat(DEALS.map(d=>d.date)).sort();
-const MIND=parseD(allDates[0]), MAXD=parseD(allDates[allDates.length-1]);
-/* dynamic period keys derived from the data range — new months/quarters/years appear automatically */
-function _ym(dt){return dt.getUTCFullYear()+'-'+String(dt.getUTCMonth()+1).padStart(2,'0');}
-const MONTH_KEYS=(()=>{const a=[];let d=new Date(Date.UTC(MIND.getUTCFullYear(),MIND.getUTCMonth(),1));const e=new Date(Date.UTC(MAXD.getUTCFullYear(),MAXD.getUTCMonth(),1));while(d<=e){a.push(_ym(d));d=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1));}return a;})();
-const KEYMONTH={};MONTH_KEYS.forEach(k=>{const[y,m]=k.split('-').map(Number);KEYMONTH[k]=MONTHS_FULL[m-1]+' '+y;});
-const QUARTER_KEYS=[...new Set(MONTH_KEYS.map(k=>{const[y,m]=k.split('-').map(Number);return y+'-Q'+Math.ceil(m/3);}))];
-const YEAR_KEYS=[...new Set(MONTH_KEYS.map(k=>k.split('-')[0]))];
-const CUR_YEAR=YEAR_KEYS[YEAR_KEYS.length-1];
+let allDates=DAILY.map(r=>r.d).concat(DEALS.map(d=>d.date)).sort();
+let MIND=parseD(allDates[0]), MAXD=parseD(allDates[allDates.length-1]);
+function monthKeys(){return [...new Set(allDates.map(d=>d.slice(0,7)))].sort();}
 
 /* build available period options */
 function buildPeriods(period){
   const out=[];
-  if(period==='month'){
-    MONTH_KEYS.forEach(k=>out.push({key:k,label:KEYMONTH[k]}));
+  if(period==='day'){
+    const days=[...new Set(DAILY.map(r=>r.d))].sort();
+    days.forEach(d=>{
+      const dt=parseD(d);
+      out.push({key:d,label:MON[dt.getUTCMonth()]+' '+dt.getUTCDate()+', '+dt.getUTCFullYear()});
+    });
+  }else if(period==='month'){
+    monthKeys().forEach(k=>{const dt=parseD(k+'-01');out.push({key:k,label:MON[dt.getUTCMonth()]+' '+dt.getUTCFullYear()});});
   }else if(period==='week'){
     let w=mondayOf(MIND);
     while(w<=MAXD){
@@ -320,14 +397,18 @@ function buildPeriods(period){
       w=addDays(w,7);
     }
   }else if(period==='quarter'){
-    QUARTER_KEYS.forEach(qk=>{const[y,q]=qk.split('-Q').map(Number);const sm=(q-1)*3;out.push({key:qk,label:'Q'+q+' '+y+' · '+MON[sm]+'–'+MON[sm+2]});});
-  }else{ YEAR_KEYS.forEach(y=>out.push({key:y,label:'Full Year '+y})); }
+    const quarters=[...new Set(allDates.map(d=>{const dt=parseD(d);return dt.getUTCFullYear()+'-Q'+(Math.floor(dt.getUTCMonth()/3)+1);} ))].sort();
+    quarters.forEach(key=>{const [y,qv]=key.split('-Q'),q=Number(qv),sm=(q-1)*3;out.push({key,label:`Q${q} ${y} · ${MON[sm]}–${MON[sm+2]}`});});
+  }else{
+    [...new Set(allDates.map(d=>d.slice(0,4)))].sort().forEach(y=>out.push({key:y,label:'Full Year '+y}));
+  }
   return out;
 }
 function rangeOf(period,key){
+  if(period==='day'){return{start:key,end:key};}
   if(period==='month'){const[y,m]=key.split('-').map(Number);return{start:`${key}-01`,end:fmtD(new Date(Date.UTC(y,m,0)))};}
   if(period==='week'){const s=key.slice(1);return{start:s,end:fmtD(addDays(parseD(s),6))};}
-  if(period==='quarter'){const[y,q]=key.split('-Q').map(Number);const sm=(q-1)*3;return{start:`${y}-${String(sm+1).padStart(2,'0')}-01`,end:fmtD(new Date(Date.UTC(y,sm+3,0)))};}
+  if(period==='quarter'){const[y,qv]=key.split('-Q'),q=Number(qv),sm=(q-1)*3;return{start:fmtD(new Date(Date.UTC(Number(y),sm,1))),end:fmtD(new Date(Date.UTC(Number(y),sm+3,0)))};}
   return {start:key+'-01-01',end:key+'-12-31'};
 }
 function prevKey(period,key){
@@ -335,7 +416,7 @@ function prevKey(period,key){
   return i>0?opts[i-1].key:null;
 }
 function monthsInRange(range){
-  return MONTH_KEYS.filter(k=>{const r=rangeOf('month',k);return r.start<=range.end && r.end>=range.start;});
+  return monthKeys().filter(k=>{const r=rangeOf('month',k);return r.start<=range.end && r.end>=range.start;});
 }
 
 /* ══════════════════════ AGGREGATION ══════════════════════ */
@@ -351,6 +432,9 @@ function latestLeads(name,range){
   const rows=DAILY.filter(r=>r.n===name && inRange(r.d,range));
   if(!rows.length){const all=DAILY.filter(r=>r.n===name).sort((a,b)=>a.d<b.d?1:-1);return all.length?all[0].l:null;}
   rows.sort((a,b)=>a.d<b.d?1:-1);return rows[0].l;
+}
+function teamLatestLeads(range){
+  return activeAgents(range).reduce((s,n)=>s+(latestLeads(n,range)||0),0);
 }
 /* which agents have any activity in range */
 function activeAgents(range){
@@ -368,6 +452,10 @@ function agentActiveMonths(name,range){
 }
 /* target factor (in months) for an agent over the selected period */
 function targetFactor(name,period,range){
+  if(period==='day'){
+    const act=DAILY.some(r=>r.n===name && r.d===range.start);
+    return act?1/DAYS_IN_MONTH:0;
+  }
   if(period==='week'){ // active that week's month?
     const mk=monthsInRange(range)[0];
     const act=DAILY.some(r=>r.n===name && inRange(r.d,rangeOf('month',mk)));
@@ -413,9 +501,9 @@ function baseOpts(extra){return Object.assign({responsive:true,maintainAspectRat
 /* ══════════════════════ RENDER: shared period totals over months ══════════════════════ */
 function monthlySeries(name){ // returns {labels, calls[], mtg[], deals[], rev[]}
   const labels=[],calls=[],mtg=[],deals=[],rev=[];
-  MONTH_KEYS.forEach(mk=>{
+  monthKeys().forEach(mk=>{
     const r=rangeOf('month',mk);const a=aggregate(r,name);
-    labels.push(MON[Number(mk.split('-')[1])-1]);calls.push(a.calls);mtg.push(a.mtg);deals.push(a.deals);rev.push(a.rev);
+    const dt=parseD(mk+'-01');labels.push(MON[dt.getUTCMonth()]);calls.push(a.calls);mtg.push(a.mtg);deals.push(a.deals);rev.push(a.rev);
   });
   return {labels,calls,mtg,deals,rev};
 }
@@ -428,6 +516,8 @@ function renderTeam(){
   const prev=pk?aggregate(rangeOf(state.period,pk)):null;
   const tf=teamTargetFactor(state.period,range);
   const tCalls=Math.round(T.callsPerMonth*tf), tMtg=Math.round(T.meetingsPerMonth*tf), tRev=Math.round(T.revenuePerMonth*tf);
+  const teamLeads=teamLatestLeads(range);
+  const prevTeamLeads=pk?teamLatestLeads(rangeOf(state.period,pk)):null;
 
   const app=document.getElementById('app');
   app.innerHTML=`
@@ -436,6 +526,7 @@ function renderTeam(){
      ${kpiTile('mtg','🤝','Meetings Booked',fNum(agg.mtg),agg.mtg,prev&&prev.mtg,tMtg)}
      ${kpiTile('deals','🏆','Deals Closed',agg.deals,agg.deals,prev&&prev.deals,null)}
      ${kpiTile('rev','💎','Revenue',fAED(agg.rev),agg.rev,prev&&prev.rev,tRev,agg.pending)}
+     ${kpiTile('leads','📈','Active Leads',fNum(teamLeads),teamLeads,prevTeamLeads,null)}
    </div>
    <div class="grid2">
      <div class="panel">
@@ -449,7 +540,7 @@ function renderTeam(){
      </div>
      <div class="panel">
        <div class="panel-hd">
-         <div class="panel-t">Team Trend <small>${MON[Number(MONTH_KEYS[0].split('-')[1])-1]} → ${MON[Number(MONTH_KEYS[MONTH_KEYS.length-1].split('-')[1])-1]} ${CUR_YEAR}</small></div>
+         <div class="panel-t">Team Trend <small>Apr → Aug 2026</small></div>
          <div class="mini-seg" id="trend-seg">
            ${['calls','mtg','deals','revenue'].map(m=>`<button data-m="${m}" class="${state.trendMetric===m?'on':''}">${METRIC[m].label}</button>`).join('')}
          </div>
@@ -490,10 +581,10 @@ function renderLeaderboard(range){
       ${avatar(a.name)}
       <div class="who"><div class="nm">${a.name}${off?'<span class="tag-off">left</span>':''}<span class="open-hint">open →</span></div><div class="ro">${meta.role||'Sales Agent'}</div></div>
       <div class="rstats">
-        <div class="rs deals"><div class="v">${a.deals}</div><div class="l">Deals</div></div>
-        <div class="rs rev"><div class="v">${a.rev?fShort(a.rev):'—'}</div><div class="l">AED</div></div>
-        <div class="rs hideM"><div class="v">${fNum(a.calls)}</div><div class="l">Calls</div></div>
-        <div class="rs hideM"><div class="v">${a.mtg}</div><div class="l">Mtgs</div></div>
+        <div class="rs calls hideM ${state.rankMetric==='calls'?'selmetric':''}"><div class="v">${fNum(a.calls)}</div><div class="l">Calls</div></div>
+        <div class="rs mtg hideM ${state.rankMetric==='mtg'?'selmetric':''}"><div class="v">${a.mtg}</div><div class="l">Meetings</div></div>
+        <div class="rs deals ${state.rankMetric==='deals'?'selmetric':''}"><div class="v">${a.deals}</div><div class="l">Deals</div></div>
+        <div class="rs rev ${state.rankMetric==='revenue'?'selmetric':''}"><div class="v">${a.rev?fShort(a.rev):'—'}</div><div class="l">AED</div></div>
       </div></div>`;
   }).join('');
   el.querySelectorAll('.row').forEach(r=>r.onclick=()=>{state.agent=r.dataset.agent;setView('individual');});
@@ -516,7 +607,7 @@ function killChart(id){charts=charts.filter(c=>{if(c.canvas&&c.canvas.id===id){c
 
 /* ══════════════════════ VIEW: INDIVIDUAL ══════════════════════ */
 function renderIndividual(){
-  if(!state.agent)state.agent=activeAgents(rangeOf('year',CUR_YEAR))[0]||AGENT_NAMES[0];
+  if(!state.agent)state.agent=activeAgents(rangeOf('year','2026'))[0]||AGENT_NAMES[0];
   const name=state.agent;const meta=AGENT_META[name]||{};
   const range=rangeOf(state.period,state.periodKey);
   const agg=aggregate(range,name);
@@ -545,7 +636,7 @@ function renderIndividual(){
    </div>
    <div class="grid2">
      <div class="panel">
-       <div class="panel-hd"><div class="panel-t">Monthly Trend <small>${name} · ${MON[Number(MONTH_KEYS[0].split('-')[1])-1]} → ${MON[Number(MONTH_KEYS[MONTH_KEYS.length-1].split('-')[1])-1]} ${CUR_YEAR}</small></div></div>
+       <div class="panel-hd"><div class="panel-t">Monthly Trend <small>${name} · Apr → Jul 2026</small></div></div>
        <div class="chart-box"><canvas id="indChart"></canvas></div>
      </div>
      <div class="panel">
@@ -584,7 +675,7 @@ function renderCompare(){
   const range=rangeOf(state.period,state.periodKey);
   if(!state.compare.length){
     // default: current active roster, top 4 by year revenue then calls
-    const yr=rangeOf('year',CUR_YEAR);
+    const yr=rangeOf('year','2026');
     const cur=ROSTER.filter(r=>r.active).map(r=>({n:r.name,...aggregate(yr,r.name)}))
       .sort((a,b)=>b.rev-a.rev||b.calls-a.calls);
     state.compare=cur.slice(0,Math.min(4,cur.length)).map(x=>x.n);
@@ -670,7 +761,7 @@ function updateRangeLabel(){
   const r=rangeOf(state.period,state.periodKey);
   const s=new Date(r.start),e=new Date(r.end);
   const f=d=>d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
-  document.getElementById('hd-range').textContent=f(s)+' – '+e.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  document.getElementById('hd-range').textContent=f(s)+' – '+f(e)+' '+e.getFullYear();
 }
 function render(){
   updateRangeLabel();
@@ -715,12 +806,102 @@ async function loadPhotos(){
   }catch(err){/* silent: keep initials */}
 }
 
+/* ══════════════════════ GOOGLE SHEETS LIVE DATA ══════════════════════ */
+function sheetNumber(v){const n=Number(String(v??'').replace(/[^0-9.-]/g,''));return Number.isFinite(n)?n:0;}
+function sheetDate(v){
+  let value=String(v).trim();
+  if(!/\b\d{4}\b/.test(value))value+=', 2026';
+  const dt=new Date(value+' 00:00:00 UTC');
+  if(Number.isNaN(dt.getTime()))return null;
+  dt.setUTCFullYear(2026);
+  return dt.toISOString().slice(0,10);
+}
+const SHEET_CACHE_KEY='team-rashwan-kpi-cache-v1';
+let sheetRefreshInFlight=false;
+
+function applySheetRows(rows,source='live'){
+  if(!Array.isArray(rows)||!rows.length)throw new Error('No KPI rows returned');
+  const mapped=rows.map(r=>({
+    d:sheetDate(r.Date),n:String(r.Broker||'').trim(),c:sheetNumber(r['Total Calls']),
+    m:sheetNumber(r.Meetings),k:sheetNumber(r['Closed Deal']),l:sheetNumber(r['Active Leads']),
+    revenue:sheetNumber(r['AED Revenue'])
+  })).filter(r=>r.d&&r.n);
+  if(!mapped.length)throw new Error('No valid KPI rows returned');
+
+  DAILY=mapped.map(({d,n,c,m,k,l})=>({d,n,c,m,k,l})).sort((a,b)=>a.d.localeCompare(b.d)||a.n.localeCompare(b.n));
+  DEALS=[];
+  mapped.forEach(r=>{for(let i=0;i<r.k;i++)DEALS.push({date:r.d,name:r.n,aed:i===0?r.revenue:0,confirmed:true});});
+
+  const previous=new Map(ROSTER.map(r=>[r.name.toLowerCase(),r]));
+  const latestByName=new Map();
+  mapped.forEach(r=>{if(!latestByName.has(r.n)||r.d>latestByName.get(r.n))latestByName.set(r.n,r.d);});
+  ROSTER=[...latestByName.entries()].map(([name,last])=>{
+    const old=previous.get(name.toLowerCase());const dt=parseD(last);
+    return {name,active:old?old.active:true,lastActive:MON[dt.getUTCMonth()],...(old&&old.role?{role:old.role}:{})};
+  }).sort((a,b)=>a.name.localeCompare(b.name));
+  const leader=[...previous.values()].find(r=>r.role==='Team Leader');
+  if(leader&&!ROSTER.some(r=>r.name.toLowerCase()===leader.name.toLowerCase()))ROSTER.push(leader);
+  AGENT_NAMES=ROSTER.map(r=>r.name);
+  ROSTER.forEach(r=>{AGENT_META[r.name]={photo:PHOTOS[r.name]||AGENT_META[r.name]?.photo||null,role:r.role||(r.active?'Sales Agent':'Former Agent'),active:r.active,lastActive:r.lastActive};});
+
+  allDates=DAILY.map(r=>r.d).concat(DEALS.map(d=>d.date)).sort();
+  MIND=parseD(allDates[0]);MAXD=parseD(allDates[allDates.length-1]);
+  CFG.lastDataDate=DAILY[DAILY.length-1].d;
+  const badge=document.getElementById('hd-updated');
+  const dateLabel=new Date(CFG.lastDataDate+'T00:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  badge.textContent=source==='live'?'Live · Data to '+dateLabel:'Loading latest data · showing saved data to '+dateLabel;
+  badge.title=source==='live'?'Connected to Google Sheets':'Complete saved data is displayed while Google Sheets refreshes';
+}
+
+async function loadSheetData(){
+  if(sheetRefreshInFlight)return false;
+  sheetRefreshInFlight=true;
+  const badge=document.getElementById('hd-updated');
+  try{
+    const res=await fetch(SHEET_API,{cache:'no-store'});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const rows=await res.json();
+    applySheetRows(rows,'live');
+    try{localStorage.setItem(SHEET_CACHE_KEY,JSON.stringify({rows,savedAt:Date.now()}));}catch(_){}
+    return true;
+  }catch(err){
+    badge.textContent='Saved data · reconnecting to Google Sheets';
+    badge.title=err.message;
+    return false;
+  }finally{
+    sheetRefreshInFlight=false;
+  }
+}
+
+function rerenderAfterSheetRefresh(period,periodKey,agent){
+  state.period=period;
+  const available=buildPeriods(period).map(p=>p.key);
+  state.periodKey=available.includes(periodKey)?periodKey:available[available.length-1];
+  state.agent=AGENT_NAMES.includes(agent)?agent:state.agent;
+  refreshPeriodPicker();refreshAgentPicker();render();
+}
+
 /* ══════════════════════ INIT ══════════════════════ */
-document.getElementById('hd-updated').textContent='Data to '+new Date(CFG.lastDataDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-if(RASHWAN_PHOTO)document.getElementById('hd-lead-photo').src=RASHWAN_PHOTO;
-state.period='month';state.periodKey=MONTH_KEYS[MONTH_KEYS.length-1];
-refreshPeriodPicker();refreshAgentPicker();render();
-loadPhotos();
+(async function init(){
+  if(RASHWAN_PHOTO)document.getElementById('hd-lead-photo').src=RASHWAN_PHOTO;
+
+  try{
+    const cached=JSON.parse(localStorage.getItem(SHEET_CACHE_KEY)||'null');
+    if(cached&&Array.isArray(cached.rows))applySheetRows(cached.rows,'cache');
+  }catch(_){}
+
+  state.period='month';state.periodKey=monthKeys().slice(-1)[0];
+  refreshPeriodPicker();refreshAgentPicker();render();
+  loadPhotos();
+
+  const initial={period:state.period,periodKey:state.periodKey,agent:state.agent};
+  if(await loadSheetData())rerenderAfterSheetRefresh(initial.period,initial.periodKey,initial.agent);
+
+  setInterval(async()=>{
+    const current={period:state.period,periodKey:state.periodKey,agent:state.agent};
+    if(await loadSheetData())rerenderAfterSheetRefresh(current.period,current.periodKey,current.agent);
+  },60000);
+})();
 </script>
 
 <script>
@@ -756,25 +937,33 @@ loadPhotos();
   .rep-k .d{font-size:10.5px;margin-top:6px;color:#98a2b3}
   .rep-k .d b.up{color:#2f9e5b}.rep-k .d b.dn{color:#d1544d}
   .rep-h{font-size:13px;font-weight:700;color:#123a5e;margin:24px 0 10px;letter-spacing:.3px}
-  .rep-tbl{width:100%;border-collapse:collapse;font-size:12px}
+  .rep-tbl{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
   .rep-tbl th{text-align:left;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#98a2b3;font-weight:600;padding:8px 10px;border-bottom:1px solid #e4e7ec}
   .rep-tbl td{padding:8px 10px;border-bottom:1px solid #eef0f3}
-  .rep-tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+  .rep-tbl th.n,.rep-tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+  .rep-agent-tbl th:nth-child(1){width:7%}
+  .rep-agent-tbl th:nth-child(2){width:28%}
+  .rep-agent-tbl th:nth-child(n+3){width:16.25%}
+  .rep-agent-tbl.with-courses th:nth-child(2){width:25%}
+  .rep-agent-tbl.with-courses th:nth-child(n+3){width:13.6%}
   .rep-tbl td.rev{color:#b5842a;font-weight:700}
   .rep-tbl tr.top td{background:#faf6ec}
+  .rep-course-input{width:54px;box-sizing:border-box;border:1px solid #d0d5dd;border-radius:6px;background:#fff;color:#101828;font:inherit;font-weight:600;text-align:right;padding:4px 6px;outline:none}
+  .rep-course-input:focus{border-color:#123a5e;box-shadow:0 0 0 2px rgba(18,58,94,.12)}
   .rep-foot{margin-top:24px;padding-top:12px;border-top:1px solid #e4e7ec;font-size:10px;color:#98a2b3;text-align:center;letter-spacing:.4px}
   @media print{
     body>*{display:none!important}
     #rep-overlay{display:block!important;position:static!important;background:#fff!important;padding:0!important;overflow:visible}
     #rep-overlay .rep-bar{display:none!important}
     .rep-paper{box-shadow:none!important;max-width:100%!important;border-radius:0!important}
+    .rep-course-input{border:0!important;box-shadow:none!important;background:transparent!important;padding:0!important}
     @page{margin:13mm}
   }`;
   const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
 
   function fFull(v){return v==null?'—':'AED '+Math.round(v).toLocaleString('en-US');}
   function num(v){return Math.round(v).toLocaleString('en-US');}
-  const PLBL={week:'Weekly',month:'Monthly',quarter:'Quarterly',year:'Yearly'};
+  const PLBL={day:'Daily',week:'Weekly',month:'Monthly',quarter:'Quarterly',year:'Yearly'};
 
   function latestOpt(period){
     const opts=buildPeriods(period);
@@ -788,6 +977,16 @@ loadPhotos();
     const d=Math.round((cur-prev)/prev*100);
     return ' · <b class="'+(d>0?'up':d<0?'dn':'')+'">'+(d>0?'▲':d<0?'▼':'±')+Math.abs(d)+'% vs prev</b>';
   }
+  const COURSE_STORE_KEY='team-rashwan-weekly-courses-v1';
+  function courseStore(){try{return JSON.parse(localStorage.getItem(COURSE_STORE_KEY)||'{}')||{};}catch(_){return {};}}
+  function courseValue(week,agent){return Math.max(0,Math.floor(Number(courseStore()[week]?.[agent])||0));}
+  function saveCourse(week,agent,value){
+    const saved=courseStore();
+    if(!saved[week])saved[week]={};
+    saved[week][agent]=Math.max(0,Math.floor(Number(value)||0));
+    try{localStorage.setItem(COURSE_STORE_KEY,JSON.stringify(saved));}catch(_){}
+  }
+
   function generate(period){
     const opt=latestOpt(period);const key=opt.key;const range=rangeOf(period,key);
     const agg=aggregate(range);
@@ -812,9 +1011,9 @@ loadPhotos();
         <div class="rep-k"><div class="l">Revenue</div><div class="v" style="color:#b5842a">${fFull(agg.rev)}</div><div class="d">of ${fFull(tRev)} target${repDelta(agg.rev,prev&&prev.rev)}</div></div>
       </div>
       <div class="rep-h">Agent Leaderboard — ${opt.label}</div>
-      <table class="rep-tbl"><thead><tr><th>#</th><th>Agent</th><th class="n">Calls</th><th class="n">Meetings</th><th class="n">Deals</th><th class="n">Revenue (AED)</th></tr></thead><tbody>
-      ${rows.length?rows.map((a,i)=>`<tr class="${i===0?'top':''}"><td>${i+1}</td><td>${a.name}</td><td class="n">${num(a.calls)}</td><td class="n">${num(a.mtg)}</td><td class="n">${a.deals}</td><td class="n rev">${a.rev?num(a.rev):'—'}</td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:#98a2b3;padding:16px">No activity in this period.</td></tr>'}
-      <tr style="font-weight:700;background:#eef2f6"><td></td><td>TEAM TOTAL</td><td class="n">${num(agg.calls)}</td><td class="n">${num(agg.mtg)}</td><td class="n">${agg.deals}</td><td class="n rev">${num(agg.rev)}</td></tr>
+      <table class="rep-tbl rep-agent-tbl ${period==='week'?'with-courses':''}"><thead><tr><th>#</th><th>Agent</th><th class="n">Calls</th><th class="n">Meetings</th><th class="n">Deals</th><th class="n">Revenue (AED)</th>${period==='week'?'<th class="n">Courses</th>':''}</tr></thead><tbody>
+      ${rows.length?rows.map((a,i)=>`<tr class="${i===0?'top':''}"><td>${i+1}</td><td>${a.name}</td><td class="n">${num(a.calls)}</td><td class="n">${num(a.mtg)}</td><td class="n">${a.deals}</td><td class="n rev">${a.rev?num(a.rev):'—'}</td>${period==='week'?'<td class="n"><input class="rep-course-input" type="number" min="0" step="1" inputmode="numeric" data-week="'+key+'" data-agent="'+encodeURIComponent(a.name)+'" value="'+courseValue(key,a.name)+'" aria-label="Courses completed"></td>':''}</tr>`).join(''):`<tr><td colspan="${period==='week'?7:6}" style="text-align:center;color:#98a2b3;padding:16px">No activity in this period.</td></tr>`}
+      <tr style="font-weight:700;background:#eef2f6"><td></td><td>TEAM TOTAL</td><td class="n">${num(agg.calls)}</td><td class="n">${num(agg.mtg)}</td><td class="n">${agg.deals}</td><td class="n rev">${num(agg.rev)}</td>${period==='week'?'<td class="n" id="rep-course-total">'+num(rows.reduce((sum,a)=>sum+courseValue(key,a.name),0))+'</td>':''}</tr>
       </tbody></table>
       <div class="rep-h">Deals Closed — ${dealsList.length} deal${dealsList.length===1?'':'s'}</div>
       <table class="rep-tbl"><thead><tr><th>Date</th><th>Agent</th><th class="n">Value (AED)</th></tr></thead><tbody>
@@ -824,6 +1023,19 @@ loadPhotos();
     let ov=document.getElementById('rep-overlay');
     if(!ov){ov=document.createElement('div');ov.id='rep-overlay';document.body.appendChild(ov);ov.onclick=e=>{if(e.target===ov)ov.classList.remove('show');};}
     ov.innerHTML=`<div class="rep-paper"><div class="rep-bar"><div class="t">${PLBL[period]} Report · ${opt.label}</div><div class="btns"><button class="rep-print" onclick="window.print()">🖨 Print / Save as PDF</button><button class="rep-close" onclick="document.getElementById('rep-overlay').classList.remove('show')">✕ Close</button></div></div><div class="rep-body">${body}</div></div>`;
+    if(period==='week'){
+      const inputs=[...ov.querySelectorAll('.rep-course-input')];
+      const updateCourseTotal=()=>{
+        const total=inputs.reduce((sum,input)=>sum+(Math.max(0,Math.floor(Number(input.value)||0))),0);
+        const totalCell=ov.querySelector('#rep-course-total');if(totalCell)totalCell.textContent=num(total);
+      };
+      inputs.forEach(input=>input.addEventListener('input',()=>{
+        const value=Math.max(0,Math.floor(Number(input.value)||0));
+        input.value=value;
+        saveCourse(input.dataset.week,decodeURIComponent(input.dataset.agent),value);
+        updateCourseTotal();
+      }));
+    }
     ov.classList.add('show');ov.scrollTop=0;
   }
   const btn=document.getElementById('rep-btn'),menu=document.getElementById('rep-menu');
