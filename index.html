@@ -336,6 +336,7 @@ ul{list-style:none}
   <a href="#services" class="ml">Services</a>
   <a href="#social" class="ml">Content</a>
   <a href="#podcast" class="ml">Podcast</a>
+  <a href="roi-calculator.html" class="ml">ROI Calculator</a>
   <a href="blog.html" class="ml">Articles</a>
   <a href="#booking" class="ml">Book Consult</a>
 </div>
@@ -349,6 +350,7 @@ ul{list-style:none}
       <div class="h-btns">
         <a href="#booking" class="btn-p">Book Free Consultation</a>
         <a href="#about" class="btn-g">Learn More</a>
+<a href="roi-calculator.html" class="btn-g">Calculate Your ROI &rarr;</a>
       </div>
     </div>
     <div class="h-stats">
@@ -669,12 +671,11 @@ function sf(e){
   if(f.mg.value){lines.push('');lines.push('Message: '+f.mg.value);}
   var txt=encodeURIComponent(lines.join('
 '));
-  var lead={name:name,email:f.em.value,phone:f.ph.value,budget:f.bu.value,goal:f.go.value,message:f.mg.value,source:'website-consultation'};
   if(window.gtag){gtag('event','generate_lead',{event_category:'consultation',value:1,currency:'AED'});}
-  var FORMSPREE='';/* Paste your free Formspree endpoint here to STORE every lead, e.g. https://formspree.io/f/xxxxxx */
-  var go=function(){b.textContent='Sent! Opening WhatsApp...';b.style.background='#1e7a1e';b.style.color='#fff';window.open('https://wa.me/971505584838?text='+txt,'_blank');};
-  if(FORMSPREE){fetch(FORMSPREE,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(lead)}).then(go).catch(go);}
-  else{setTimeout(go,600);}
+  var payload={_subject:'New website lead: '+name, name:name, email:f.em.value, phone:f.ph.value, budget:f.bu.value, goal:f.go.value, message:f.mg.value, _template:'table'};
+  var go=function(){b.textContent='Sent! Opening WhatsApp...'; b.style.background='#1e7a1e'; b.style.color='#fff'; window.open('https://wa.me/971505584838?text='+txt,'_blank');};
+  try{ fetch('https://formsubmit.co/ajax/abdo.spoton@gmail.com',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)}).then(go).catch(go); }
+  catch(_){ go(); }
 }
 </script>
 </body>
