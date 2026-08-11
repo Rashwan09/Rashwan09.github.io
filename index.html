@@ -669,12 +669,11 @@ function sf(e){
   if(f.bu.value) lines.push('Budget: '+f.bu.value);
   if(f.go.value) lines.push('Goal: '+f.go.value);
   if(f.mg.value){lines.push('');lines.push('Message: '+f.mg.value);}
-  var txt=encodeURIComponent(lines.join('
-'));
+  var txt=encodeURIComponent(lines.join('\n'));
   if(window.gtag){gtag('event','generate_lead',{event_category:'consultation',value:1,currency:'AED'});}
   var payload={_subject:'New website lead: '+name, name:name, email:f.em.value, phone:f.ph.value, budget:f.bu.value, goal:f.go.value, message:f.mg.value, _template:'table'};
   var go=function(){b.textContent='Sent! Opening WhatsApp...'; b.style.background='#1e7a1e'; b.style.color='#fff'; window.open('https://wa.me/971505584838?text='+txt,'_blank');};
-  try{ fetch('https://formsubmit.co/ajax/abdo.spoton@gmail.com',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)}).then(go).catch(go); }
+  try{ fetch('https://formsubmit.co/ajax/5578865ffbbd157e8ea0b2e5a0da441b',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)}).then(go).catch(go); }
   catch(_){ go(); }
 }
 </script>
