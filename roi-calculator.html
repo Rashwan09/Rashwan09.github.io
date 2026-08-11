@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dubai Property ROI Calculator | Abdelrahman Rashwan</title>
+<meta name="description" content="Free Dubai property ROI &amp; rental-yield calculator. Estimate gross yield, net yield, cash flow, and 5-year return on any Dubai real estate investment. Built by advisor Abdelrahman Rashwan."/>
+<meta name="keywords" content="Dubai property ROI calculator, Dubai rental yield calculator, Dubai real estate return, off-plan ROI Dubai, Abdelrahman Rashwan"/>
+<link rel="canonical" href="https://abdorashwan.com/roi-calculator.html"/>
+<meta property="og:title" content="Dubai Property ROI Calculator | Abdelrahman Rashwan"/>
+<meta property="og:description" content="Estimate gross yield, net yield, cash flow, and 5-year return on any Dubai property in seconds."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://abdorashwan.com/roi-calculator.html"/>
+<meta property="og:image" content="https://ugc.production.linktr.ee/8220d423-e32b-410b-81a6-6a68d31c5c7b_c7e1eb8d7c05874f4f14bd46b637535e-tplv-tiktokx-cropcenter-1080-1080.jpeg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Dubai Property ROI Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"AED"},"url":"https://abdorashwan.com/roi-calculator.html","author":{"@type":"Person","name":"Abdelrahman Rashwan"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GZ7109CQRL"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-GZ7109CQRL');</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#0C0C0C;--white:#fff;--grey:#F5F5F3;--gold:#B8963E;--gold-b:#D4AF5A;--text-light:rgba(255,255,255,.55);--line:rgba(255,255,255,.1);--font:'Space Grotesk',sans-serif;--body:'Inter',sans-serif}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:#fff;font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:inherit;text-decoration:none}
+input,select,button{font-family:inherit}
+.nav{position:sticky;top:0;z-index:50;background:rgba(12,12,12,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nw{max-width:1100px;margin:0 auto;padding:16px 28px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--font);font-weight:700;font-size:18px;letter-spacing:-.03em}
+.logo span{color:var(--gold-b)}
+.nlinks{display:flex;gap:26px;align-items:center;font-size:13px;font-weight:500;color:var(--text-light)}
+.nlinks a:hover{color:#fff}
+.nbtn{background:var(--gold-b);color:var(--black);padding:9px 18px;border-radius:3px;font-family:var(--font);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.hero{max-width:1100px;margin:0 auto;padding:60px 28px 20px;text-align:center}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);padding:7px 16px;border-radius:3px;margin-bottom:22px}
+.hero h1{font-family:var(--font);font-size:clamp(2rem,4.5vw,3.2rem);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+.hero h1 em{font-style:normal;color:var(--gold-b)}
+.hero p{color:var(--text-light);max-width:560px;margin:16px auto 0;font-size:16px}
+.app{max-width:1100px;margin:36px auto 0;padding:0 28px 40px;display:grid;grid-template-columns:1fr 1fr;gap:28px}
+@media(max-width:820px){.app{grid-template-columns:1fr}}
+.panel{background:#151515;border:1px solid var(--line);border-radius:14px;padding:28px}
+.panel h2{font-family:var(--font);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;font-weight:700}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:12.5px;color:var(--text-light);margin-bottom:7px;font-weight:500}
+.field label b{color:var(--gold-b);font-weight:600}
+.inp{width:100%;background:#0c0c0c;border:1px solid var(--line);border-radius:7px;padding:12px 14px;color:#fff;font-size:15px;font-weight:500}
+.inp:focus{outline:none;border-color:var(--gold)}
+input[type=range]{width:100%;accent-color:var(--gold-b);margin-top:4px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;background:#0c0c0c;border:1px solid var(--line);color:var(--text-light);padding:11px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.seg button.on{background:var(--gold-b);color:var(--black);border-color:var(--gold-b)}
+.results{background:linear-gradient(160deg,#1a1710,#141414);border:1px solid rgba(184,150,62,.35)}
+.big{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px}
+.stat{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.stat .l{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-light)}
+.stat .v{font-family:var(--font);font-size:28px;font-weight:700;letter-spacing:-.02em;margin-top:4px}
+.stat .v.gold{color:var(--gold-b)}
+.stat .v.pos{color:#5ec46f}.stat .v.neg{color:#e06a6a}
+.stat.small .v{font-size:20px}
+.rowstats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px}
+@media(max-width:520px){.rowstats{grid-template-columns:1fr 1fr}.big{grid-template-columns:1fr}}
+.cta{margin-top:22px;background:#0c0c0c;border:1px solid var(--line);border-radius:12px;padding:22px}
+.cta h3{font-family:var(--font);font-size:18px;margin-bottom:6px}
+.cta p{font-size:13.5px;color:var(--text-light);margin-bottom:14px}
+.cta .go{display:inline-block;background:var(--gold-b);color:var(--black);font-family:var(--font);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.04em;padding:14px 26px;border-radius:4px;cursor:pointer;border:none}
+.cta .go:hover{background:#e8c46a}
+.disc{max-width:1100px;margin:0 auto;padding:0 28px 60px;color:rgba(255,255,255,.32);font-size:12px;line-height:1.7}
+.foot{border-top:1px solid var(--line);padding:30px 28px;text-align:center;color:var(--text-light);font-size:13px}
+.foot a{color:var(--gold-b)}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nw">
+  <a class="logo" href="index.html">RASHWAN<span>.</span></a>
+  <div class="nlinks">
+    <a href="index.html">Home</a>
+    <a href="index.html#about">About</a>
+    <a href="blog.html">Insights</a>
+    <a class="nbtn" href="https://wa.me/971505584838" target="_blank" rel="noopener">Book a Call</a>
+  </div>
+</div></nav>
+<header class="hero">
+  <span class="tag">Investor Tool</span>
+  <h1>Dubai Property <em>ROI Calculator</em></h1>
+  <p>Model the real return on any Dubai property — gross yield, net yield, monthly cash flow, and your 5-year total return. Built the way I analyse deals for investors.</p>
+</header>
+<div class="app">
+  <div class="panel">
+    <h2>Your Investment</h2>
+    <div class="field"><label>Property price <b id="pL">AED 1,500,000</b></label><input class="inp" id="price" type="number" value="1500000" min="100000" step="10000"/></div>
+    <div class="field"><label>Purchase type</label><div class="seg"><button type="button" id="tCash" class="on" onclick="setType('cash')">Cash</button><button type="button" id="tMort" onclick="setType('mortgage')">Mortgage</button></div></div>
+    <div id="mortBox" style="display:none">
+      <div class="row"><div class="field"><label>Down payment <b id="dpL">25%</b></label><input id="dp" type="range" min="20" max="100" value="25" step="5"/></div><div class="field"><label>Interest rate <b id="irL">4.5%</b></label><input id="ir" type="range" min="2" max="8" value="4.5" step="0.1"/></div></div>
+      <div class="field"><label>Mortgage term <b id="tmL">25 yrs</b></label><input id="tm" type="range" min="5" max="30" value="25" step="1"/></div>
+    </div>
+    <div class="field"><label>Expected annual rent <b id="rL">AED 120,000</b></label><input class="inp" id="rent" type="number" value="120000" min="0" step="1000"/><div style="font-size:11.5px;color:rgba(255,255,255,.35);margin-top:6px">Tip: Dubai gross yields typically run 6&ndash;9%. Not sure? <a href="https://wa.me/971505584838" target="_blank" style="color:var(--gold-b)">Ask me for the number on your area.</a></div></div>
+    <div class="row"><div class="field"><label>Annual service charge <b id="scL">AED 18,000</b></label><input class="inp" id="sc" type="number" value="18000" min="0" step="500"/></div><div class="field"><label>Annual appreciation <b id="apL">6%</b></label><input id="ap" type="range" min="0" max="15" value="6" step="0.5"/></div></div>
+    <div class="field"><label>Purchase costs (DLD + fees) <b id="pcL">7%</b></label><input id="pc" type="range" min="0" max="10" value="7" step="0.5"/></div>
+  </div>
+  <div class="panel results">
+    <h2>Your Returns</h2>
+    <div class="big"><div class="stat"><div class="l">Gross Yield</div><div class="v gold" id="oGross">8.0%</div></div><div class="stat"><div class="l">Net Yield</div><div class="v gold" id="oNet">6.8%</div></div></div>
+    <div class="rowstats"><div class="stat small"><div class="l">Monthly Cash Flow</div><div class="v" id="oCf">AED 8,500</div></div><div class="stat small"><div class="l">Cash-on-Cash</div><div class="v" id="oCoc">6.8%</div></div><div class="stat small"><div class="l">Cash Invested</div><div class="v" id="oInv">AED 1.6M</div></div></div>
+    <div class="rowstats"><div class="stat small"><div class="l">Value in 5 yrs</div><div class="v" id="oVal">AED 2.0M</div></div><div class="stat small"><div class="l">5-Yr Total Profit</div><div class="v" id="oProfit">AED 900K</div></div><div class="stat small"><div class="l">5-Yr Total ROI</div><div class="v gold" id="oRoi">56%</div></div></div>
+    <div class="cta"><h3>Want the real numbers for a specific project?</h3><p>I'll pull live pricing, the actual service charges, and the true achievable rent for any building — then tell you if the deal stacks up.</p><button class="go" onclick="sendLead()">Get My Free Deal Analysis &rarr;</button></div>
+  </div>
+</div>
+<div class="disc">Estimates are for illustration only and assume constant rent and linear appreciation. Actual returns depend on financing, vacancy, transaction costs, market timing, and building-specific factors. This is not financial advice — Abdelrahman Rashwan is a real estate advisor, not a licensed financial advisor. Always verify figures independently before investing.</div>
+<footer class="foot"><div>Abdelrahman Rashwan &middot; Dubai Real Estate Investment Advisor &middot; Host of The Entrepreneur Show</div><div style="margin-top:8px"><a href="index.html">Home</a> &middot; <a href="blog.html">Insights</a> &middot; <a href="https://wa.me/971505584838" target="_blank">WhatsApp</a></div></footer>
+<script>
+var type='cash';
+function $(i){return document.getElementById(i);}
+function setType(t){type=t;$('tCash').classList.toggle('on',t=='cash');$('tMort').classList.toggle('on',t=='mortgage');$('mortBox').style.display=t=='mortgage'?'block':'none';calc();}
+function fmt(n){n=Math.round(n);return 'AED '+n.toLocaleString('en-US');}
+function fmtShort(n){var a=Math.abs(n);if(a>=1e6)return 'AED '+(n/1e6).toFixed(1)+'M';if(a>=1e3)return 'AED '+Math.round(n/1e3)+'K';return fmt(n);}
+function calc(){
+  var P=+$('price').value||0, rent=+$('rent').value||0, sc=+$('sc').value||0;
+  var ap=(+$('ap').value||0)/100, pc=(+$('pc').value||0)/100;
+  var dp=type=='mortgage'?(+$('dp').value||100)/100:1;
+  var ir=(+$('ir').value||0)/100, tm=+$('tm').value||25;
+  $('pL').textContent=fmt(P);$('rL').textContent=fmt(rent);$('scL').textContent=fmt(sc);
+  $('dpL').textContent=Math.round(dp*100)+'%';$('irL').textContent=(ir*100).toFixed(1)+'%';
+  $('tmL').textContent=tm+' yrs';$('apL').textContent=(ap*100).toFixed(1)+'%';$('pcL').textContent=(pc*100).toFixed(1)+'%';
+  var mgmt=rent*0.05; var noi=rent-sc-mgmt;
+  var grossY=P>0?rent/P*100:0; var netY=P>0?noi/P*100:0;
+  var loan=type=='mortgage'?P*(1-dp):0; var r=ir/12, nM=tm*12;
+  var mPay=loan>0&&r>0?loan*r/(1-Math.pow(1+r,-nM)):(loan>0?loan/nM:0);
+  var cf=noi-mPay*12; var cashInvested=P*dp+P*pc;
+  var coc=cashInvested>0?cf/cashInvested*100:0;
+  var val5=P*Math.pow(1+ap,5); var profit5=(val5-P)+cf*5;
+  var roi5=cashInvested>0?profit5/cashInvested*100:0;
+  $('oGross').textContent=grossY.toFixed(1)+'%';$('oNet').textContent=netY.toFixed(1)+'%';
+  var c=$('oCf');c.textContent=fmt(cf/12);c.className='v '+(cf>=0?'pos':'neg');
+  $('oCoc').textContent=coc.toFixed(1)+'%';$('oInv').textContent=fmtShort(cashInvested);
+  $('oVal').textContent=fmtShort(val5);$('oProfit').textContent=fmtShort(profit5);$('oRoi').textContent=roi5.toFixed(0)+'%';
+}
+['price','rent','sc','dp','ir','tm','ap','pc'].forEach(function(id){$(id).addEventListener('input',calc);});
+function sendLead(){
+  var P=$('price').value, rent=$('rent').value;
+  if(window.gtag){gtag('event','generate_lead',{event_category:'roi_calculator',value:1,currency:'AED'});}
+  var msg=encodeURIComponent('Hi Rashwan, I used your ROI calculator (property ~AED '+(+P).toLocaleString()+', rent ~AED '+(+rent).toLocaleString()+'). Can you run a real deal analysis for me?');
+  window.open('https://wa.me/971505584838?text='+msg,'_blank');
+}
+calc();
+</script>
+</body>
+</html>
