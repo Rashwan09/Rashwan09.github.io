@@ -309,6 +309,11 @@ body{min-height:100vh;background:
 .cwk-bar{width:62%;max-width:38px;min-height:3px;background:linear-gradient(180deg,#3a8fd4,#123a5e);border-radius:6px 6px 0 0}
 .cwk-d{font-size:10.5px;color:#667085;text-transform:uppercase;letter-spacing:.03em}
 .cwk-v{font-size:12.5px;font-weight:700;color:#123a5e;font-variant-numeric:tabular-nums}
+
+/* calls week selector (added) */
+.cwk .panel-hd{flex-wrap:wrap}
+.cwk-week-pick{min-width:150px}
+.cwk-bar.zero{background:#d4dbe3}
 </style>
 </head>
 <body>
@@ -381,20 +386,31 @@ const LISTINGS_URL=LISTINGS_DATA.url||'';
 function listingsFor(name){return LISTINGS.filter(l=>String(l.agent||'').toLowerCase()===String(name||'').toLowerCase());}
 function listingsCount(name){return listingsFor(name).length;}
 function weeklyDailyCalls(name){
-  const opt=latestPeriodOpt('week'); const r=rangeOf('week',opt.key);
-  const days=[...new Set(DAILY.filter(x=>inRange(x.d,r)).map(x=>x.d))].sort();
-  const out=days.map(d=>{let c=0;DAILY.forEach(x=>{if(x.d===d&&(!name||x.n===name))c+=x.c;});return {d:d,calls:c};});
-  return {label:opt.label,days:out};
+  const wopts=buildPeriods('week');
+  let key=state.callsWeekKey;
+  if(!key||!wopts.find(o=>o.key===key))key=latestPeriodOpt('week').key;
+  const opt=wopts.find(o=>o.key===key);
+  const r=rangeOf('week',key);
+  const start=parseD(r.start);
+  const out=[];
+  for(let i=0;i<7;i++){const dd=fmtD(addDays(start,i));let c=0;DAILY.forEach(x=>{if(x.d===dd&&(!name||x.n===name))c+=x.c;});out.push({d:dd,calls:c});}
+  return {key:key,label:opt?opt.label:'',days:out};
+}
+function callsWeekSelect(cur){
+  const wopts=buildPeriods('week');
+  const opts=wopts.slice().reverse().map(function(o){return '<option value="'+o.key+'"'+(o.key===cur?' selected':'')+'>'+escH(String(o.label).replace('Wk ','Week of '))+'</option>';}).join('');
+  return '<select class="sel cwk-week-pick" aria-label="Select which week">'+opts+'</select>';
 }
 function callsWeekGraph(name){
   const w=weeklyDailyCalls(name); if(!w.days.length)return '';
   const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const max=Math.max(1,...w.days.map(x=>x.calls));
   const bars=w.days.map(x=>{const dt=parseD(x.d);const hp=Math.max(2,Math.round(x.calls/max*100));
-    return `<div class="cwk-col"><div class="cwk-barwrap"><div class="cwk-bar" style="height:${hp}%" title="${fNum(x.calls)} calls · ${DOW[dt.getUTCDay()]} ${MON[dt.getUTCMonth()]} ${dt.getUTCDate()}"></div></div><div class="cwk-d">${DOW[dt.getUTCDay()]}</div><div class="cwk-v">${fNum(x.calls)}</div></div>`;}).join('');
+    return `<div class="cwk-col"><div class="cwk-barwrap"><div class="cwk-bar${x.calls===0?' zero':''}" style="height:${hp}%" title="${fNum(x.calls)} calls · ${DOW[dt.getUTCDay()]} ${MON[dt.getUTCMonth()]} ${dt.getUTCDate()}"></div></div><div class="cwk-d">${DOW[dt.getUTCDay()]}</div><div class="cwk-v">${fNum(x.calls)}</div></div>`;}).join('');
   const total=w.days.reduce((s,x)=>s+x.calls,0);
-  const sub=(name?escH(name):'Team')+' · '+String(w.label).replace('Wk ','')+' · '+fNum(total)+' calls';
-  return `<div class="panel cwk"><div class="panel-hd"><div class="panel-t">Calls — This Week <small>${sub}</small></div></div><div class="cwk-graph">${bars}</div></div>`;
+  const avg=Math.round(total/7);
+  const sub=(name?escH(name):'Team')+' · '+fNum(total)+' calls · '+fNum(avg)+'/day avg';
+  return `<div class="panel cwk"><div class="panel-hd"><div class="panel-t">Daily Calls <small>${sub}</small></div>${callsWeekSelect(w.key)}</div><div class="cwk-graph">${bars}</div></div>`;
 }
 
 const PBRK_LBL={day:'Daily',week:'Weekly',month:'Monthly',quarter:'Quarterly',year:'Yearly'};
@@ -923,6 +939,8 @@ document.getElementById('period-seg').onclick=e=>{const b=e.target.closest('butt
   refreshPeriodPicker();render();};
 document.getElementById('period-pick').onchange=e=>{state.periodKey=e.target.value;render();};
 document.getElementById('agent-pick').onchange=e=>{state.agent=e.target.value;render();};
+if(!('callsWeekKey' in state))state.callsWeekKey=null;
+document.addEventListener('change',function(e){var t=e.target;if(t&&t.classList&&t.classList.contains('cwk-week-pick')){state.callsWeekKey=t.value;render();}});
 
 /* ══════════════════════ LIVE AIRTABLE PHOTOS ══════════════════════ */
 const AT_TOOL='mcp__5a48164a-972f-494f-832a-c5cc77759b6b__list_records_for_table';
