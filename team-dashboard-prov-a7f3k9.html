@@ -385,10 +385,30 @@ let LISTINGS=Array.isArray(LISTINGS_DATA.rows)?LISTINGS_DATA.rows:[];
 const LISTINGS_URL=LISTINGS_DATA.url||'';
 function listingsFor(name){return LISTINGS.filter(l=>String(l.agent||'').toLowerCase()===String(name||'').toLowerCase());}
 function listingsCount(name){return listingsFor(name).length;}
+function weekOptsAll(){
+  const opts=buildPeriods('week').slice();
+  if(!opts.length)return opts;
+  const today=new Date();
+  const tEnd=new Date(Date.UTC(today.getUTCFullYear(),today.getUTCMonth(),today.getUTCDate()));
+  let w=addDays(parseD(opts[opts.length-1].key.slice(1)),7);
+  while(w<=tEnd){
+    const end=addDays(w,6);
+    const key='W'+fmtD(w);
+    const lbl='Wk '+MON[w.getUTCMonth()]+' '+w.getUTCDate()+'–'+(end.getUTCMonth()!==w.getUTCMonth()?MON[end.getUTCMonth()]+' ':'')+end.getUTCDate();
+    opts.push({key:key,label:lbl,start:fmtD(w),end:fmtD(end)});
+    w=addDays(w,7);
+  }
+  return opts;
+}
+function defaultWeekKey(){
+  const opts=weekOptsAll();
+  for(let i=opts.length-1;i>=0;i--){const a=aggregate(rangeOf('week',opts[i].key));if(a.calls||a.mtg||a.deals)return opts[i].key;}
+  return opts.length?opts[opts.length-1].key:null;
+}
 function weeklyDailyCalls(name){
-  const wopts=buildPeriods('week');
+  const wopts=weekOptsAll();
   let key=state.callsWeekKey;
-  if(!key||!wopts.find(o=>o.key===key))key=latestPeriodOpt('week').key;
+  if(!key||!wopts.find(o=>o.key===key))key=defaultWeekKey();
   const opt=wopts.find(o=>o.key===key);
   const r=rangeOf('week',key);
   const start=parseD(r.start);
@@ -397,7 +417,7 @@ function weeklyDailyCalls(name){
   return {key:key,label:opt?opt.label:'',days:out};
 }
 function callsWeekSelect(cur){
-  const wopts=buildPeriods('week');
+  const wopts=weekOptsAll();
   const opts=wopts.slice().reverse().map(function(o){return '<option value="'+o.key+'"'+(o.key===cur?' selected':'')+'>'+escH(String(o.label).replace('Wk ','Week of '))+'</option>';}).join('');
   return '<select class="sel cwk-week-pick" aria-label="Select which week">'+opts+'</select>';
 }
