@@ -314,6 +314,10 @@ body{min-height:100vh;background:
 .cwk .panel-hd{flex-wrap:wrap}
 .cwk-week-pick{min-width:150px}
 .cwk-bar.zero{background:#d4dbe3}
+
+/* calls granularity toggle (added) */
+.cwk-ctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.cwk-gran button{padding:6px 11px;font-size:11.5px}
 </style>
 </head>
 <body>
@@ -421,16 +425,35 @@ function callsWeekSelect(cur){
   const opts=wopts.slice().reverse().map(function(o){return '<option value="'+o.key+'"'+(o.key===cur?' selected':'')+'>'+escH(String(o.label).replace('Wk ','Week of '))+'</option>';}).join('');
   return '<select class="sel cwk-week-pick" aria-label="Select which week">'+opts+'</select>';
 }
+function callsBars(items){
+  const max=Math.max(1,...items.map(x=>x.value));
+  return items.map(function(x){const hp=Math.max(2,Math.round(x.value/max*100));
+    return '<div class="cwk-col"><div class="cwk-barwrap"><div class="cwk-bar'+(x.value===0?' zero':'')+'" style="height:'+hp+'%" title="'+escH(x.title||'')+'"></div></div><div class="cwk-d">'+escH(x.label)+'</div><div class="cwk-v">'+fNum(x.value)+'</div></div>';}).join('');
+}
+function callsGranSeg(gran){
+  const defs=[['day','Daily'],['week','Weekly'],['month','Monthly'],['quarter','Quarterly']];
+  return '<div class="seg cwk-gran">'+defs.map(function(d){return '<button data-g="'+d[0]+'"'+(d[0]===gran?' class="on"':'')+'>'+d[1]+'</button>';}).join('')+'</div>';
+}
 function callsWeekGraph(name){
-  const w=weeklyDailyCalls(name); if(!w.days.length)return '';
-  const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const max=Math.max(1,...w.days.map(x=>x.calls));
-  const bars=w.days.map(x=>{const dt=parseD(x.d);const hp=Math.max(2,Math.round(x.calls/max*100));
-    return `<div class="cwk-col"><div class="cwk-barwrap"><div class="cwk-bar${x.calls===0?' zero':''}" style="height:${hp}%" title="${fNum(x.calls)} calls · ${DOW[dt.getUTCDay()]} ${MON[dt.getUTCMonth()]} ${dt.getUTCDate()}"></div></div><div class="cwk-d">${DOW[dt.getUTCDay()]}</div><div class="cwk-v">${fNum(x.calls)}</div></div>`;}).join('');
-  const total=w.days.reduce((s,x)=>s+x.calls,0);
-  const avg=Math.round(total/7);
-  const sub=(name?escH(name):'Team')+' · '+fNum(total)+' calls · '+fNum(avg)+'/day avg';
-  return `<div class="panel cwk"><div class="panel-hd"><div class="panel-t">Daily Calls <small>${sub}</small></div>${callsWeekSelect(w.key)}</div><div class="cwk-graph">${bars}</div></div>`;
+  const gran=state.callsGran||'day';
+  let items=[],sub='',extra='';
+  if(gran==='day'){
+    const w=weeklyDailyCalls(name); if(!w.days.length)return '';
+    const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    items=w.days.map(function(x){const dt=parseD(x.d);return {label:DOW[dt.getUTCDay()],value:x.calls,title:fNum(x.calls)+' calls · '+DOW[dt.getUTCDay()]+' '+MON[dt.getUTCMonth()]+' '+dt.getUTCDate()};});
+    const total=items.reduce(function(s,x){return s+x.value;},0);
+    sub=(name?escH(name):'Team')+' · '+String(w.label).replace('Wk ','')+' · '+fNum(total)+' calls · '+fNum(Math.round(total/7))+'/day avg';
+    extra=callsWeekSelect(w.key);
+  }else{
+    const s=seriesByPeriod(name,gran);
+    items=s.labels.map(function(lbl,idx){return {label:lbl,value:s.calls[idx],title:lbl+' · '+fNum(s.calls[idx])+' calls'};});
+    const total=items.reduce(function(a,x){return a+x.value;},0);
+    const descr={week:'by week',month:'by month',quarter:'by quarter'}[gran];
+    sub=(name?escH(name):'Team')+' · '+descr+' · '+fNum(total)+' calls';
+  }
+  if(!items.length)return '';
+  const ctrl='<div class="cwk-ctrl">'+callsGranSeg(gran)+extra+'</div>';
+  return '<div class="panel cwk"><div class="panel-hd"><div class="panel-t">Calls <small>'+sub+'</small></div>'+ctrl+'</div><div class="cwk-graph">'+callsBars(items)+'</div></div>';
 }
 
 const PBRK_LBL={day:'Daily',week:'Weekly',month:'Monthly',quarter:'Quarterly',year:'Yearly'};
@@ -961,6 +984,8 @@ document.getElementById('period-pick').onchange=e=>{state.periodKey=e.target.val
 document.getElementById('agent-pick').onchange=e=>{state.agent=e.target.value;render();};
 if(!('callsWeekKey' in state))state.callsWeekKey=null;
 document.addEventListener('change',function(e){var t=e.target;if(t&&t.classList&&t.classList.contains('cwk-week-pick')){state.callsWeekKey=t.value;render();}});
+if(!('callsGran' in state))state.callsGran='day';
+document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('.cwk-gran button'):null;if(b){state.callsGran=b.getAttribute('data-g');render();}});
 
 /* ══════════════════════ LIVE AIRTABLE PHOTOS ══════════════════════ */
 const AT_TOOL='mcp__5a48164a-972f-494f-832a-c5cc77759b6b__list_records_for_table';
