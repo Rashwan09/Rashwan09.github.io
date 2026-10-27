@@ -847,16 +847,26 @@ function renderIndividual(){
   // combo chart calls+meetings (bars) with deals line
   killCharts();
   const s=seriesByPeriod(name,state.period);
+  const dealMax=Math.max(1,...s.deals);
+  const dealLabels={id:'dealLabels',afterDatasetsDraw:function(ch){
+    var di=ch.data.datasets.findIndex(function(d){return d.label==='Deals';});if(di<0)return;
+    var meta=ch.getDatasetMeta(di),cx=ch.ctx;cx.save();
+    cx.font='700 10px '+(getComputedStyle(document.body).fontFamily||'sans-serif');cx.fillStyle=C.green;cx.textAlign='center';
+    meta.data.forEach(function(pt,i){var v=ch.data.datasets[di].data[i];if(v>0){cx.fillText(String(v),pt.x,Math.max(10,pt.y-9));}});
+    cx.restore();
+  }};
   charts.push(new Chart(document.getElementById('indChart'),{
     data:{labels:s.labels,datasets:[
       {type:'bar',label:'Calls',data:s.calls,backgroundColor:C.blue+'cc',borderRadius:5,yAxisID:'y',maxBarThickness:36},
       {type:'bar',label:'Meetings',data:s.mtg,backgroundColor:C.bronze+'dd',borderRadius:5,yAxisID:'y1',maxBarThickness:36},
-      {type:'line',label:'Deals',data:s.deals,borderColor:C.green,backgroundColor:C.green,tension:.35,pointRadius:4,yAxisID:'y1'}
+      {type:'line',label:'Deals',data:s.deals,borderColor:C.green,backgroundColor:C.green,tension:.35,pointRadius:4,pointHoverRadius:6,yAxisID:'y2'}
     ]},
+    plugins:[dealLabels],
     options:baseOpts({scales:{
       x:{grid:{display:false}},
       y:{position:'left',beginAtZero:true,grid:{color:C.grid},title:{display:true,text:'Calls',font:{size:9}},ticks:{font:{size:10}}},
-      y1:{position:'right',beginAtZero:true,grid:{display:false},title:{display:true,text:'Meetings / Deals',font:{size:9}},ticks:{font:{size:10}}}
+      y1:{position:'right',beginAtZero:true,grid:{display:false},title:{display:true,text:'Meetings',font:{size:9}},ticks:{font:{size:10}}},
+      y2:{position:'right',display:false,beginAtZero:true,suggestedMax:Math.max(2,Math.ceil(dealMax*1.5)),grid:{display:false}}
     }})}));
   // deals table
   const dl=DEALS.filter(d=>d.name===name).sort((a,b)=>a.date<b.date?1:-1);
