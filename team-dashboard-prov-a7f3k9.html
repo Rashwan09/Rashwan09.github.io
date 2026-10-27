@@ -301,6 +301,14 @@ body{min-height:100vh;background:
 .tlst .r .bar{flex:1;height:10px;background:rgba(16,24,40,.06);border-radius:6px;overflow:hidden}
 .tlst .r .bar span{display:block;height:100%;background:linear-gradient(90deg,#2f7fc4,#123a5e)}
 .tlst .r .v{flex:0 0 26px;text-align:right;font-weight:700;font-size:12.5px}
+
+/* calls-this-week bar graph (added) */
+.cwk-graph{display:flex;align-items:flex-end;gap:8px;padding:16px 8px 6px;overflow-x:auto}
+.cwk-col{flex:1 1 0;min-width:40px;display:flex;flex-direction:column;align-items:center;gap:7px}
+.cwk-barwrap{width:100%;height:140px;display:flex;align-items:flex-end;justify-content:center}
+.cwk-bar{width:62%;max-width:38px;min-height:3px;background:linear-gradient(180deg,#3a8fd4,#123a5e);border-radius:6px 6px 0 0}
+.cwk-d{font-size:10.5px;color:#667085;text-transform:uppercase;letter-spacing:.03em}
+.cwk-v{font-size:12.5px;font-weight:700;color:#123a5e;font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -372,6 +380,23 @@ let LISTINGS=Array.isArray(LISTINGS_DATA.rows)?LISTINGS_DATA.rows:[];
 const LISTINGS_URL=LISTINGS_DATA.url||'';
 function listingsFor(name){return LISTINGS.filter(l=>String(l.agent||'').toLowerCase()===String(name||'').toLowerCase());}
 function listingsCount(name){return listingsFor(name).length;}
+function weeklyDailyCalls(name){
+  const opt=latestPeriodOpt('week'); const r=rangeOf('week',opt.key);
+  const days=[...new Set(DAILY.filter(x=>inRange(x.d,r)).map(x=>x.d))].sort();
+  const out=days.map(d=>{let c=0;DAILY.forEach(x=>{if(x.d===d&&(!name||x.n===name))c+=x.c;});return {d:d,calls:c};});
+  return {label:opt.label,days:out};
+}
+function callsWeekGraph(name){
+  const w=weeklyDailyCalls(name); if(!w.days.length)return '';
+  const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const max=Math.max(1,...w.days.map(x=>x.calls));
+  const bars=w.days.map(x=>{const dt=parseD(x.d);const hp=Math.max(2,Math.round(x.calls/max*100));
+    return `<div class="cwk-col"><div class="cwk-barwrap"><div class="cwk-bar" style="height:${hp}%" title="${fNum(x.calls)} calls · ${DOW[dt.getUTCDay()]} ${MON[dt.getUTCMonth()]} ${dt.getUTCDate()}"></div></div><div class="cwk-d">${DOW[dt.getUTCDay()]}</div><div class="cwk-v">${fNum(x.calls)}</div></div>`;}).join('');
+  const total=w.days.reduce((s,x)=>s+x.calls,0);
+  const sub=(name?escH(name):'Team')+' · '+String(w.label).replace('Wk ','')+' · '+fNum(total)+' calls';
+  return `<div class="panel cwk"><div class="panel-hd"><div class="panel-t">Calls — This Week <small>${sub}</small></div></div><div class="cwk-graph">${bars}</div></div>`;
+}
+
 const PBRK_LBL={day:'Daily',week:'Weekly',month:'Monthly',quarter:'Quarterly',year:'Yearly'};
 function latestPeriodOpt(period){
   const opts=buildPeriods(period);
@@ -658,6 +683,7 @@ function renderTeam(){
        <div class="chart-box"><canvas id="trendChart"></canvas></div>
      </div>
    </div>
+   ${callsWeekGraph(null)}
    ${teamListingsPanel()}
    ${agg.pending?`<div class="note"><b>Heads-up:</b> ${agg.pending} closed deal${agg.pending>1?'s':''} in this period ${agg.pending>1?'have':'has'} no AED value yet (May &amp; July closes). Revenue shown counts confirmed deals only. Send me the figures and I'll fold them in.</div>`:''}
   `;
@@ -746,6 +772,7 @@ function renderIndividual(){
      ${kpiTile('rev','💎','Revenue',fAED(agg.rev),agg.rev,prev&&prev.rev,tRev,agg.pending)}
    </div>
    ${breakdownPanel(name)}
+   ${callsWeekGraph(name)}
    <div class="grid2">
      <div class="panel">
        <div class="panel-hd"><div class="panel-t">${PBRK_LBL[state.period]||'Monthly'} Trend <small>${name} · ${rangeLabel()}</small></div></div>
