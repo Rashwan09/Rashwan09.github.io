@@ -318,6 +318,25 @@ body{min-height:100vh;background:
 /* calls granularity toggle (added) */
 .cwk-ctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .cwk-gran button{padding:6px 11px;font-size:11.5px}
+
+/* daily pulse — team (added) */
+.dp-tiles{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.dp-tile{flex:1 1 130px;background:#f5f8fc;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.dp-l{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);font-weight:600}
+.dp-today{font-size:22px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1.15;margin-top:2px}
+.dp-wk{font-size:10.5px;color:var(--mut2);margin-top:1px}
+.dp-tblwrap{overflow-x:auto}
+.dp-tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.dp-tbl th{text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:.03em;color:var(--mut);padding:5px 10px;border-bottom:1px solid var(--line);font-weight:600}
+.dp-tbl th:first-child{text-align:left}
+.dp-tbl td{padding:6px 10px;text-align:right;border-bottom:1px solid #eef2f6;font-variant-numeric:tabular-nums;color:var(--txt)}
+.dp-tbl td.dp-d{text-align:left}
+.dp-tbl td.dp-dl{color:var(--green);font-weight:700}
+.dp-tbl tbody tr:first-child{background:#fbfdff}
+/* compare periods grid (added) */
+.cg th small,.cg td small{display:block;font-size:9px;color:var(--mut2);font-weight:500;letter-spacing:.02em;margin-top:1px}
+.cg-team td{background:#f2f6fb;font-weight:700}
+.cg-team td:first-child{color:var(--navy)}
 </style>
 </head>
 <body>
@@ -722,6 +741,7 @@ function renderTeam(){
      ${kpiTile('rev','💎','Revenue',fAED(agg.rev),agg.rev,prev&&prev.rev,tRev,agg.pending)}
      ${kpiTile('leads','📈','Active Leads',fNum(teamLeads),teamLeads,prevTeamLeads,null)}
    </div>
+   ${teamDailyStrip()}
    <div class="grid2">
      <div class="panel">
        <div class="panel-hd">
@@ -880,6 +900,38 @@ function renderIndividual(){
 }
 
 /* ══════════════════════ VIEW: COMPARE ══════════════════════ */
+function teamDailyStrip(){
+  const dow=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const dayKey=latestPeriodOpt('day').key, weekKey=latestPeriodOpt('week').key;
+  const d=aggregate(rangeOf('day',dayKey)), w=aggregate(rangeOf('week',weekKey));
+  const pdt=parseD(dayKey);
+  const dayLbl=dow[pdt.getUTCDay()]+' '+MON[pdt.getUTCMonth()]+' '+pdt.getUTCDate();
+  const tiles=[['calls','Calls'],['mtg','Meetings'],['deals','Deals'],['rev','Revenue']].map(function(kv){
+    var k=kv[0]; var dv=k==='rev'?fAED(d[k]):fNum(d[k]); var wv=k==='rev'?fAED(w[k]):fNum(w[k]);
+    return '<div class="dp-tile"><div class="dp-l">'+kv[1]+'</div><div class="dp-today">'+dv+'</div><div class="dp-wk">'+wv+' this week</div></div>';
+  }).join('');
+  const days=[...new Set(DAILY.map(function(x){return x.d;}))].sort().slice(-10).reverse();
+  const tr=days.map(function(dd){var a=aggregate(rangeOf('day',dd));var p=parseD(dd);
+    return '<tr><td class="dp-d">'+dow[p.getUTCDay()]+' '+MON[p.getUTCMonth()]+' '+p.getUTCDate()+'</td><td><b>'+fNum(a.calls)+'</b></td><td>'+fNum(a.mtg)+'</td><td class="dp-dl">'+a.deals+'</td><td class="rev">'+(a.rev?fAED(a.rev):'—')+'</td></tr>';
+  }).join('');
+  return '<div class="panel dp"><div class="panel-hd"><div class="panel-t">Daily Pulse — Team <small>Latest day: '+dayLbl+' · today vs this week, then day by day</small></div></div>'
+    +'<div class="dp-tiles">'+tiles+'</div>'
+    +'<div class="dp-tblwrap"><table class="dp-tbl"><thead><tr><th>Day</th><th>Calls</th><th>Meetings</th><th>Deals</th><th>Revenue</th></tr></thead><tbody>'+tr+'</tbody></table></div></div>';
+}
+function renderCmpGrid(){
+  var el=document.getElementById('cmp-grid'); if(!el)return;
+  var periods=[['day','Day'],['week','Week'],['month','Month'],['quarter','Quarter']];
+  var keys=periods.map(function(pp){return latestPeriodOpt(pp[0]).key;});
+  var ranges=periods.map(function(pp,i){return rangeOf(pp[0],keys[i]);});
+  var m=state.cmpMetric, mk=m==='revenue'?'rev':METRIC[m].key, isRev=m==='revenue';
+  function fmt(v){return isRev?(v?fAED(v):'—'):fNum(v);}
+  if(!state.compare.length){el.innerHTML='<div class="empty" style="padding:20px">Pick members above to compare them across periods.</div>';return;}
+  var subs=periods.map(function(pp,i){return brkShortLabel(pp[0],{key:keys[i]});});
+  var head='<tr><th>Member <small>'+METRIC[m].label+'</small></th>'+periods.map(function(pp,i){return '<th class="num">'+pp[1]+'<small>'+subs[i]+'</small></th>';}).join('')+'</tr>';
+  var teamRow='<tr class="cg-team"><td>Team <small>all active</small></td>'+ranges.map(function(r){return '<td class="num"><b>'+fmt(aggregate(r)[mk])+'</b></td>';}).join('')+'</tr>';
+  var rows=state.compare.map(function(n){return '<tr><td><div class="tbl-name">'+avatar(n)+'<span>'+n+'</span></div></td>'+ranges.map(function(r){return '<td class="num">'+fmt(aggregate(r,n)[mk])+'</td>';}).join('')+'</tr>';}).join('');
+  el.innerHTML='<table class="tbl cg"><thead>'+head+'</thead><tbody>'+teamRow+rows+'</tbody></table>';
+}
 function renderCompare(){
   const range=rangeOf(state.period,state.periodKey);
   if(!state.compare.length){
@@ -907,12 +959,18 @@ function renderCompare(){
         <div id="cmp-table"></div>
       </div>
     </div>
+  
+    <div class="panel">
+      <div class="panel-hd"><div class="panel-t">Across Periods <small>Day · Week · Month · Quarter — each member &amp; the team total</small></div></div>
+      <div id="cmp-grid"></div>
+    </div>
   `;
   renderChips();
   renderCmpChart(range);
   renderCmpTable(range);
+   renderCmpGrid();
   document.getElementById('cmp-seg').onclick=e=>{const b=e.target.closest('button');if(!b)return;state.cmpMetric=b.dataset.m;
-    document.querySelectorAll('#cmp-seg button').forEach(x=>x.classList.toggle('on',x.dataset.m===state.cmpMetric));renderCmpChart(rangeOf(state.period,state.periodKey));};
+    document.querySelectorAll('#cmp-seg button').forEach(x=>x.classList.toggle('on',x.dataset.m===state.cmpMetric));renderCmpChart(rangeOf(state.period,state.periodKey));renderCmpGrid();};
 }
 function renderChips(){
   const el=document.getElementById('cmp-chips');
