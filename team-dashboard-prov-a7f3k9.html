@@ -337,6 +337,10 @@ body{min-height:100vh;background:
 .cg th small,.cg td small{display:block;font-size:9px;color:var(--mut2);font-weight:500;letter-spacing:.02em;margin-top:1px}
 .cg-team td{background:#f2f6fb;font-weight:700}
 .cg-team td:first-child{color:var(--navy)}
+
+/* meetings graph — bronze bars (added) */
+.mtg-graph .cwk-bar{background:linear-gradient(180deg,#d8ab58,var(--bronze))}
+.mtg-graph .cwk-v{color:var(--bronze)}
 </style>
 </head>
 <body>
@@ -452,6 +456,47 @@ function callsBars(items){
 function callsGranSeg(gran){
   const defs=[['day','Daily'],['week','Weekly'],['month','Monthly'],['quarter','Quarterly']];
   return '<div class="seg cwk-gran">'+defs.map(function(d){return '<button data-g="'+d[0]+'"'+(d[0]===gran?' class="on"':'')+'>'+d[1]+'</button>';}).join('')+'</div>';
+}
+function weeklyDailyMtg(name){
+  const wopts=weekOptsAll();
+  let key=state.mtgWeekKey;
+  if(!key||!wopts.find(o=>o.key===key))key=defaultWeekKey();
+  const opt=wopts.find(o=>o.key===key);
+  const r=rangeOf('week',key);
+  const start=parseD(r.start);
+  const out=[];
+  for(let i=0;i<7;i++){const dd=fmtD(addDays(start,i));let c=0;DAILY.forEach(x=>{if(x.d===dd&&(!name||x.n===name))c+=x.m;});out.push({d:dd,mtg:c});}
+  return {key:key,label:opt?opt.label:'',days:out};
+}
+function mtgGranSeg(gran){
+  const defs=[['day','Daily'],['week','Weekly'],['month','Monthly'],['quarter','Quarterly']];
+  return '<div class="seg mtg-gran">'+defs.map(function(d){return '<button data-g="'+d[0]+'"'+(d[0]===gran?' class="on"':'')+'>'+d[1]+'</button>';}).join('')+'</div>';
+}
+function mtgWeekSelect(cur){
+  const wopts=weekOptsAll();
+  const opts=wopts.slice().reverse().map(function(o){return '<option value="'+o.key+'"'+(o.key===cur?' selected':'')+'>'+escH(String(o.label).replace('Wk ','Week of '))+'</option>';}).join('');
+  return '<select class="sel mtg-week-pick" aria-label="Select which week">'+opts+'</select>';
+}
+function meetingsGraph(name){
+  const gran=state.mtgGran||'day';
+  let items=[],sub='',extra='';
+  if(gran==='day'){
+    const w=weeklyDailyMtg(name); if(!w.days.length)return '';
+    const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    items=w.days.map(function(x){const dt=parseD(x.d);return {label:DOW[dt.getUTCDay()],value:x.mtg,title:fNum(x.mtg)+' booked · '+DOW[dt.getUTCDay()]+' '+MON[dt.getUTCMonth()]+' '+dt.getUTCDate()};});
+    const total=items.reduce(function(s,x){return s+x.value;},0);
+    sub=(name?escH(name):'Team')+' · '+String(w.label).replace('Wk ','')+' · '+fNum(total)+' booked';
+    extra=mtgWeekSelect(w.key);
+  }else{
+    const s=seriesByPeriod(name,gran);
+    items=s.labels.map(function(lbl,idx){return {label:lbl,value:s.mtg[idx],title:lbl+' · '+fNum(s.mtg[idx])+' booked'};});
+    const total=items.reduce(function(a,x){return a+x.value;},0);
+    const descr={week:'by week',month:'by month',quarter:'by quarter'}[gran];
+    sub=(name?escH(name):'Team')+' · '+descr+' · '+fNum(total)+' booked';
+  }
+  if(!items.length)return '';
+  const ctrl='<div class="cwk-ctrl">'+mtgGranSeg(gran)+extra+'</div>';
+  return '<div class="panel cwk mtg-graph"><div class="panel-hd"><div class="panel-t">Meetings Booked <small>'+sub+'</small></div>'+ctrl+'</div><div class="cwk-graph">'+callsBars(items)+'</div></div>';
 }
 function callsWeekGraph(name){
   const gran=state.callsGran||'day';
@@ -763,6 +808,7 @@ function renderTeam(){
      </div>
    </div>
    ${callsWeekGraph(null)}
+   ${meetingsGraph(null)}
    ${teamListingsPanel()}
    ${agg.pending?`<div class="note"><b>Heads-up:</b> ${agg.pending} closed deal${agg.pending>1?'s':''} in this period ${agg.pending>1?'have':'has'} no AED value yet (May &amp; July closes). Revenue shown counts confirmed deals only. Send me the figures and I'll fold them in.</div>`:''}
   `;
@@ -852,6 +898,7 @@ function renderIndividual(){
    </div>
    ${breakdownPanel(name)}
    ${callsWeekGraph(name)}
+   ${meetingsGraph(name)}
    <div class="grid2">
      <div class="panel">
        <div class="panel-hd"><div class="panel-t">${PBRK_LBL[state.period]||'Monthly'} Trend <small>${name} · ${rangeLabel()}</small></div></div>
@@ -1054,6 +1101,10 @@ if(!('callsWeekKey' in state))state.callsWeekKey=null;
 document.addEventListener('change',function(e){var t=e.target;if(t&&t.classList&&t.classList.contains('cwk-week-pick')){state.callsWeekKey=t.value;render();}});
 if(!('callsGran' in state))state.callsGran='day';
 document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('.cwk-gran button'):null;if(b){state.callsGran=b.getAttribute('data-g');render();}});
+if(!('mtgWeekKey' in state))state.mtgWeekKey=null;
+if(!('mtgGran' in state))state.mtgGran='day';
+document.addEventListener('change',function(e){var t=e.target;if(t&&t.classList&&t.classList.contains('mtg-week-pick')){state.mtgWeekKey=t.value;render();}});
+document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('.mtg-gran button'):null;if(b){state.mtgGran=b.getAttribute('data-g');render();}});
 
 /* ══════════════════════ LIVE AIRTABLE PHOTOS ══════════════════════ */
 const AT_TOOL='mcp__5a48164a-972f-494f-832a-c5cc77759b6b__list_records_for_table';
